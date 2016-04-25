@@ -24,7 +24,8 @@ public class Life extends JFrame implements ActionListener {
 		String[] buttons = {"Start", "Clear", "Gen", "Speed", "Quit",
 				            "Number of generations #100"};
 				
-		JPanel mainPanel = new JPanel(new BorderLayout());						
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		DrawPanel drawPanel = new DrawPanel();
 		JPanel buttonsPanel = new JPanel();				
 		
 		for (int i = 0; i < buttons.length; i++) {
@@ -37,6 +38,7 @@ public class Life extends JFrame implements ActionListener {
 		        buttonsPanel.add(button);
 			}
 		}
+		mainPanel.add(drawPanel);
 		mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
 		add(mainPanel);		
 	}
