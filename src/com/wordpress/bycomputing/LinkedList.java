@@ -1,6 +1,7 @@
 package com.wordpress.bycomputing;
 
 public class LinkedList {
+	
 	Linkable head;
 	
     public interface Linkable {
