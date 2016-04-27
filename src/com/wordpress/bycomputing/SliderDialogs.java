@@ -10,9 +10,9 @@ import javax.swing.event.ChangeListener;
 @SuppressWarnings("serial")
 public class SliderDialogs {
 	
-	private GameOfLife game;
+	private Life game;
 	
-	public SliderDialogs(GameOfLife game) {
+	public SliderDialogs(Life game) {
 		this.game = game;
 	}
 
