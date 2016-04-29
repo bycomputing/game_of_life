@@ -12,18 +12,19 @@ import javax.swing.SwingUtilities;
 import com.wordpress.bycomputing.LinkedList.Linkable;
 
 @SuppressWarnings("serial")
-public class Life extends JFrame implements ActionListener {
+public class Life extends JFrame {
 	
-	private int speed = 1, gens = 100;
-	private final String[] BUTTONS = { "Start", "Clear",
-			"Gens", "Speed", "Quit", "Generation #" + gens };
+	private int speed = 60, gens = 100;
 	private Thread game;
-	JLabel label;
-	DrawPanel gameBoard;
-	SliderDialogs sliderDialogs;	
+	JButton startButn, clearButn, gensButn, speedButn, quitButn;
+	JLabel gensLabel;		
 
 	public Life() {
 		super();
+		initGUI();				
+	}
+	
+	private void initGUI() {
 		this.setTitle("Game of Life");
 		this.setSize(640, 480);
 		this.setResizable(false);
@@ -32,25 +33,94 @@ public class Life extends JFrame implements ActionListener {
 				
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JPanel buttonsPanel = new JPanel();
-		gameBoard = new DrawPanel(this);
+		GameBoard gameBoard = new GameBoard(this);
 		
-		sliderDialogs = new SliderDialogs(this);
+		SliderDialogs dialogs = new SliderDialogs(this);
 		
-		for (int i = 0; i < BUTTONS.length; i++) {
-			if (i == BUTTONS.length - 1) {
-				label = new JLabel(BUTTONS[i]);
-				buttonsPanel.add(label);
-			} else {
-			    JButton button = new JButton(BUTTONS[i]);
-		        button.addActionListener(this);
-		        buttonsPanel.add(button);
+		startButn = new JButton("Start");
+		clearButn = new JButton("Clear");
+		gensButn = new JButton("Gens");
+		speedButn = new JButton("Speed");
+		quitButn = new JButton("Quit");
+		gensLabel = new JLabel(String.format("Generation #%5d%n", gens));
+		
+		buttonsPanel.add(startButn);
+		buttonsPanel.add(clearButn);
+		buttonsPanel.add(gensButn);
+		buttonsPanel.add(speedButn);
+		buttonsPanel.add(quitButn);
+		buttonsPanel.add(gensLabel);
+		
+		startButn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switch (e.getActionCommand()) {
+				case "Start":
+					startButn.setText("Stop");
+					game = new Thread(gameBoard);
+					game.start();
+					break;
+				case "Stop":
+					startButn.setText("Start");
+					gameBoard.stop();
+				default:
+					break;
+				}
+					
 			}
-		}
+		});
+		
+		clearButn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameBoard.clearWorld();				
+			}
+		});
+		
+		gensButn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(
+						null, dialogs.newGensDialog());				
+			}
+		});
+		
+		speedButn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(
+						null, dialogs.newSpeedDialog());
+				
+			}
+		});
+		
+		quitButn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int response = JOptionPane.showConfirmDialog(
+						null, "Do you really want to quit?",
+						"Message", JOptionPane.YES_NO_OPTION);
+				switch (response) {
+				case JOptionPane.YES_OPTION:
+					System.exit(0);
+				case JOptionPane.NO_OPTION:
+					break;
+				default:
+					break;
+			    }				
+			}
+		});	
+		
 		mainPanel.add(gameBoard);
 		mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
 		this.add(mainPanel);		
 	}
-	
+
 	public int getSpeed() { return speed; }
 
 	public void setSpeed(int speed) { this.speed = speed; }
@@ -58,41 +128,6 @@ public class Life extends JFrame implements ActionListener {
 	public int getGenerations() { return gens; }
 
 	public void setGenerations(int gens) { this.gens = gens; }
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		switch (e.getActionCommand()) {
-		case "Start":
-			game = new Thread(gameBoard);
-			game.start();
-			break;
-		case "Clear":
-			gameBoard.clearWorld();
-			break;
-		case "Gens":
-			JOptionPane.showMessageDialog(
-					null, sliderDialogs.newGensDialog());
-			break;
-		case "Speed":
-			JOptionPane.showMessageDialog(
-					null, sliderDialogs.newSpeedDialog());
-			break;
-		case "Quit":
-			int response = JOptionPane.showConfirmDialog(
-					this, "Do you really want to quit?",
-					"Message", JOptionPane.YES_NO_OPTION);
-			switch (response) {
-			case JOptionPane.YES_OPTION:
-				System.exit(0);
-			case JOptionPane.NO_OPTION:
-				break;
-			default:
-				break;
-		    }
-		default:
-			break;
-		};		
-	}
 	
 	static class LinkableCell implements Linkable
 	{		

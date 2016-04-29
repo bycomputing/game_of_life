@@ -11,15 +11,14 @@ import javax.swing.JPanel;
 import com.wordpress.bycomputing.Life.LinkableCell;
 
 @SuppressWarnings("serial")
-public class DrawPanel extends JPanel implements MouseListener, MouseMotionListener, Runnable {
-	
+public class GameBoard extends JPanel implements MouseListener, MouseMotionListener, Runnable {	
 	private static final int MAXCOL = 50, MAXROW = 28;
-	private int gens = 0;
+	private volatile boolean running;	
 	private static Graphics2D g2d;
 	private Life game;
-	LinkedList cells;			
+	LinkedList cells;				
 	
-	public DrawPanel(Life game) {
+	public GameBoard(Life game) {
 		this.game = game;
 		cells = new LinkedList();
 		addMouseListener(this);
@@ -29,6 +28,26 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 	public void clearWorld() {
 		cells = new LinkedList();
 		repaint();		
+	}
+	
+	@Override
+	public void run() {
+		running = true;
+		int gens = 0;
+		while (running) {
+			if (gens  == game.getGenerations() - 1) stop();
+			simulate();
+			++gens;
+			game.gensLabel.setText(String.format("Generation #%5d%n", gens));
+			try {
+				Thread.sleep(1000/game.getSpeed());				
+			} catch (Exception e) {}
+		}		
+	}	
+
+	public void stop() {
+		game.startButn.setText("Start");
+		running = false;		
 	}
 
 	@Override
@@ -85,20 +104,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 				cells.insertAtHead(new LinkableCell(col, row));
 				repaint();
 			}		
-	}
-
-	@Override
-	public void run() {
-		if (gens < game.getGenerations()) {
-			simulate();
-			++gens;
-			game.label.setText("Generations #" + gens);
-			try {
-				Thread.sleep(1000/game.getSpeed());
-				run();
-			} catch (Exception e) {}
-		}
-		gens = 0;		
 	}
 
 	private void simulate() {

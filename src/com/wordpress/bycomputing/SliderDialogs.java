@@ -34,7 +34,7 @@ public class SliderDialogs {
 
 		protected void UIPack() {
 			JPanel panel = new JPanel(new GridLayout(1, 2));
-			slider = new JSlider(0, 10, game.getSpeed());
+			slider = new JSlider(0, 100, game.getSpeed());
 			slider.addChangeListener(this);
 			label = new JLabel("Speed #" + game.getSpeed());
 			panel.add(slider);
@@ -67,7 +67,7 @@ public class SliderDialogs {
 		public void stateChanged(ChangeEvent e) {
 			int value = slider.getValue();
 			game.setGenerations(value);
-			game.label.setText("Generations #" + value);
+			game.gensLabel.setText(String.format("Generation #%5d%n", value));
 			label.setText("Generations #" + value);
 		}		
 	}
