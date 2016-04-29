@@ -1,6 +1,8 @@
 package com.wordpress.bycomputing;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -12,8 +14,7 @@ import javax.swing.SwingUtilities;
 import com.wordpress.bycomputing.LinkedList.Linkable;
 
 @SuppressWarnings("serial")
-public class Life extends JFrame {
-	
+public class Life extends JFrame {	
 	private int speed = 60, gens = 100;
 	private Thread game;
 	JButton startButn, clearButn, gensButn, speedButn, quitButn;
@@ -27,14 +28,12 @@ public class Life extends JFrame {
 	private void initGUI() {
 		this.setTitle("Game of Life");
 		this.setSize(640, 480);
-		this.setResizable(false);
+		this.setMinimumSize(new Dimension(640, 480));
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);		
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 				
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		JPanel buttonsPanel = new JPanel();
-		GameBoard gameBoard = new GameBoard(this);
-		
+		JPanel bottomPanel = new JPanel();
+		GameBoard gameBoard = new GameBoard(this);		
 		SliderDialogs dialogs = new SliderDialogs(this);
 		
 		startButn = new JButton("Start");
@@ -44,12 +43,17 @@ public class Life extends JFrame {
 		quitButn = new JButton("Quit");
 		gensLabel = new JLabel(String.format("Generation #%5d%n", gens));
 		
-		buttonsPanel.add(startButn);
-		buttonsPanel.add(clearButn);
-		buttonsPanel.add(gensButn);
-		buttonsPanel.add(speedButn);
-		buttonsPanel.add(quitButn);
-		buttonsPanel.add(gensLabel);
+		bottomPanel.add(startButn);
+		bottomPanel.add(clearButn);
+		bottomPanel.add(gensButn);
+		bottomPanel.add(speedButn);
+		bottomPanel.add(quitButn);
+		bottomPanel.add(gensLabel);
+		
+		Container pane = getContentPane();
+        pane.setLayout(new BorderLayout());
+		pane.add(gameBoard, BorderLayout.CENTER);
+		pane.add(bottomPanel, BorderLayout.SOUTH);
 		
 		startButn.addActionListener(new ActionListener() {
 			
@@ -101,7 +105,7 @@ public class Life extends JFrame {
 		quitButn.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				int response = JOptionPane.showConfirmDialog(
 						null, "Do you really want to quit?",
 						"Message", JOptionPane.YES_NO_OPTION);
@@ -115,10 +119,6 @@ public class Life extends JFrame {
 			    }				
 			}
 		});	
-		
-		mainPanel.add(gameBoard);
-		mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
-		this.add(mainPanel);		
 	}
 
 	public int getSpeed() { return speed; }

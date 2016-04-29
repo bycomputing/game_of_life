@@ -1,8 +1,11 @@
 package com.wordpress.bycomputing;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -11,9 +14,10 @@ import javax.swing.JPanel;
 import com.wordpress.bycomputing.Life.LinkableCell;
 
 @SuppressWarnings("serial")
-public class GameBoard extends JPanel implements MouseListener, MouseMotionListener, Runnable {	
-	private static final int MAXCOL = 50, MAXROW = 28;
-	private volatile boolean running;	
+public class GameBoard extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, Runnable {	
+	private static final int BOXSIZE = 12;
+	private volatile boolean running;
+	private Dimension gameBoardSize = null;
 	private static Graphics2D g2d;
 	private Life game;
 	LinkedList cells;				
@@ -21,6 +25,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 	public GameBoard(Life game) {
 		this.game = game;
 		cells = new LinkedList();
+		addComponentListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);		
 	}
@@ -32,8 +37,9 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 	
 	@Override
 	public void run() {
-		running = true;
 		int gens = 0;
+		if (game.getGenerations() == 0) game.startButn.setText("Start");
+		else running = true;
 		while (running) {
 			if (gens  == game.getGenerations() - 1) stop();
 			simulate();
@@ -49,9 +55,23 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 		game.startButn.setText("Start");
 		running = false;		
 	}
+	
+	@Override
+	public void componentHidden(ComponentEvent e) {}
 
 	@Override
-	public void mouseClicked(MouseEvent e) { addLinkableCell(e.getX(), e.getY()); }	
+	public void componentMoved(ComponentEvent e) {}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) { addLinkableCell(e); }	
 
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -63,13 +83,13 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) { addLinkableCell(e.getX(), e.getY()); }
+	public void mouseReleased(MouseEvent e) { addLinkableCell(e); }
 	
 	@Override
-	public void mouseDragged(MouseEvent e) { addLinkableCell(e.getX(), e.getY()); }
+	public void mouseDragged(MouseEvent e) { addLinkableCell(e); }
 
 	@Override
-	public void mouseMoved(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e) {}	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -81,33 +101,37 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 		g2d = (Graphics2D) g;		
 		g2d.setColor(Color.DARK_GRAY);
 		
-		for (int y = 55; y < 400; y += 12)
-		    g2d.drawLine(20, y, getWidth() - 10, y);
-		for (int x = 20; x < 630; x += 12)
-			g2d.drawLine(x, 55, x, 391);
+		for (int i = 0; i <= gameBoardSize.width; i++)
+			g2d.drawLine(((i * BOXSIZE)+BOXSIZE), BOXSIZE,
+					     ((i * BOXSIZE) + BOXSIZE), (int) (BOXSIZE + (
+					    	   BOXSIZE * gameBoardSize.getHeight())));
+		
+		for (int i = 0; i <= gameBoardSize.height; i++)
+			g2d.drawLine(BOXSIZE, ((i * BOXSIZE) + BOXSIZE),
+			            (int) (BOXSIZE * (gameBoardSize.getWidth() + 1)),
+			            ((i * BOXSIZE) + BOXSIZE));
 		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {			
 			g2d.setPaint(Color.RED);			
-			g2d.draw(new Ellipse2D.Double(
-					l.getX() * 12 + 23,l.getY() * 12 + 57, 7, 7));			
+			g2d.draw(new Ellipse2D.Double(l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));			
 			g2d.setPaint(Color.GREEN);			
 	        g2d.fill(new Ellipse2D.Double(
-	        		l.getX() * 12 + 23, l.getY() * 12 + 57, 7, 7));
+	        		l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));
 		}
 	}
 	
-	private void addLinkableCell(int x, int y) {
-		if ((x > 20) && (x < 620) && (y > 56) && (y < 390)) {			
-				int col = (x - 20) / 12;
-				int row = (y - 56) / 12;
+	private void addLinkableCell(MouseEvent e) {
+		int col = e.getX() / BOXSIZE - 1;
+		int row = e.getY() / BOXSIZE - 1;
+		if ((col >= 0) && (col < gameBoardSize.width) && (row >= 0) && (row < gameBoardSize.height)) {				
 				cells.remove(new LinkableCell(col, row));
 				cells.insertAtHead(new LinkableCell(col, row));
 				repaint();
-			}		
+		}		
 	}
 
 	private void simulate() {
-        boolean[][] world = new boolean[MAXCOL+2][MAXROW+2];		
+        boolean[][] world = new boolean[gameBoardSize.width + 2][gameBoardSize.height + 2];		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {
 			world[l.getX()+1][l.getY()+1] = true;			
 		}
