@@ -8,20 +8,20 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
-public class SliderDialogs {	
-	private Life game;
+public class SliderDialogs {
+	private int speed = 0, generations = 0;
 	
-	public SliderDialogs(Life game) {
-		this.game = game;
-	}
+	public void setSpeed(int speed) { this.speed = speed; }
 
-	public SpeedDialog newSpeedDialog() {
-		return new SpeedDialog();
-	}
+	public void setGenerations(int generations) { this.generations = generations; }
+
+	public int getSpeed() { return speed; }
+
+	public int getGenerations() { return generations; }
+
+	public SpeedDialog newSpeedDialog() { return new SpeedDialog(); }
 	
-	public GensDialog newGensDialog() {
-		return new GensDialog();
-	}
+	public GensDialog newGensDialog() { return new GensDialog(); }
 
 	class SpeedDialog extends JPanel implements ChangeListener {
 		JSlider slider;
@@ -33,9 +33,9 @@ public class SliderDialogs {
 
 		protected void UIPack() {
 			JPanel panel = new JPanel(new GridLayout(1, 2));
-			slider = new JSlider(0, 100, game.getSpeed());
+			slider = new JSlider(0, 100, speed);
 			slider.addChangeListener(this);
-			label = new JLabel("Speed: " + game.getSpeed());
+			label = new JLabel("Speed: " + speed);
 			panel.add(slider);
 			panel.add(label);
 			add(panel);
@@ -43,9 +43,8 @@ public class SliderDialogs {
 		
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			int value = slider.getValue();
-			game.setSpeed(value);			
-			label.setText("Speed: " + value);			
+			speed = slider.getValue();			
+			label.setText("Speed: " + speed);			
 		}		
 	}
 	
@@ -54,9 +53,9 @@ public class SliderDialogs {
 		@Override
 		protected void UIPack() {
 			JPanel panel = new JPanel(new GridLayout(1, 2));
-			slider = new JSlider(0, 10000, game.getGenerations());
+			slider = new JSlider(0, 10000, generations);
 			slider.addChangeListener(this);
-			label = new JLabel("No. of generation(s): " + game.getGenerations());
+			label = new JLabel("No. of generation(s): " + generations);
 			panel.add(slider);
 			panel.add(label);
 			add(panel);
@@ -64,10 +63,8 @@ public class SliderDialogs {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			int value = slider.getValue();
-			game.setGenerations(value);
-			game.gensLabel.setText(String.format("Generation #%5d%n", value));
-			label.setText("No. of generation(s): " + value);
+			generations = slider.getValue();
+			label.setText("No. of generation(s): " + generations);
 		}		
 	}
 }

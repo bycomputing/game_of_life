@@ -14,16 +14,13 @@ import javax.swing.JPanel;
 import com.wordpress.bycomputing.Life.LinkableCell;
 
 @SuppressWarnings("serial")
-public class GameBoard extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, Runnable {	
+public class GameBoard extends JPanel implements ComponentListener, MouseListener, MouseMotionListener {	
 	private static final int BOXSIZE = 12;
-	private volatile boolean running;
 	private Dimension gameBoardSize = null;
 	private static Graphics2D g2d;
-	private Life game;
 	LinkedList cells;				
 	
-	public GameBoard(Life game) {
-		this.game = game;
+	public GameBoard() {
 		cells = new LinkedList();
 		addComponentListener(this);
 		addMouseListener(this);
@@ -33,27 +30,6 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	public void clearWorld() {
 		cells = new LinkedList();
 		repaint();		
-	}
-	
-	@Override
-	public void run() {
-		int gens = 0;
-		if (game.getGenerations() == 0) game.startButn.setText("Start");
-		else running = true;
-		while (running) {
-			if (gens  == game.getGenerations() - 1) stop();
-			simulate();
-			++gens;
-			game.gensLabel.setText(String.format("Generation #%5d%n", gens));
-			try {
-				Thread.sleep(1000/game.getSpeed());				
-			} catch (Exception e) {}
-		}		
-	}	
-
-	public void stop() {
-		game.startButn.setText("Start");
-		running = false;		
 	}
 	
 	@Override
@@ -130,7 +106,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		}		
 	}
 
-	private void simulate() {
+	protected void simulate() {
         boolean[][] world = new boolean[gameBoardSize.width + 2][gameBoardSize.height + 2];		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {
 			world[l.getX()+1][l.getY()+1] = true;			
