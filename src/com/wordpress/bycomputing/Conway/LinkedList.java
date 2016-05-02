@@ -1,4 +1,4 @@
-package com.wordpress.bycomputing;
+package com.wordpress.bycomputing.Conway;
 
 public class LinkedList {
 	

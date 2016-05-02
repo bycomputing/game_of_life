@@ -1,4 +1,4 @@
-package com.wordpress.bycomputing;
+package com.wordpress.bycomputing.Conway;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -11,7 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import com.wordpress.bycomputing.LinkedList.Linkable;
+
+import com.wordpress.bycomputing.Conway.LinkedList.Linkable;
 
 @SuppressWarnings("serial")
 public class Life extends JFrame implements Runnable {	

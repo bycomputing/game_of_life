@@ -1,4 +1,4 @@
-package com.wordpress.bycomputing;
+package com.wordpress.bycomputing.Conway;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,7 +11,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import javax.swing.JPanel;
-import com.wordpress.bycomputing.Life.LinkableCell;
+
+import com.wordpress.bycomputing.Conway.Life.LinkableCell;
 
 @SuppressWarnings("serial")
 public class GameBoard extends JPanel implements ComponentListener, MouseListener, MouseMotionListener {	

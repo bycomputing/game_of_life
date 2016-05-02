@@ -1,4 +1,4 @@
-package com.wordpress.bycomputing;
+package com.wordpress.bycomputing.Conway;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
