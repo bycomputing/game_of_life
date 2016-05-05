@@ -18,10 +18,14 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	private static final int BOXSIZE = 12;
 	private Dimension gameBoardSize = null;
 	private static Graphics2D g2d;
-	LinkedList cells;				
+	LinkedList cells;	
 	
 	public GameBoard() {
-		cells = new LinkedList();
+		this(new LinkedList());
+	}
+	
+	public GameBoard(LinkedList cells) {
+		this.cells = cells;
 		addComponentListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);		
@@ -32,14 +36,6 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		repaint();		
 	}
 	
-	public void addLinkableCell(int col, int row) {
-		if ((col >= 0) && (col < gameBoardSize.width) && (row >= 0) && (row < gameBoardSize.height)) {				
-			cells.remove(new LinkableCell(col, row));
-			cells.insertAtHead(new LinkableCell(col, row));
-			repaint();
-	    }		
-	}
-
 	public void simulate() {
         boolean[][] world = new boolean[gameBoardSize.width + 2][gameBoardSize.height + 2];		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {
@@ -140,7 +136,11 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	private void addCell(MouseEvent e) {
 		int col = e.getX() / BOXSIZE - 1;
 		int row = e.getY() / BOXSIZE - 1;
-		addLinkableCell(col, row);				
+		if ((col >= 0) && (col < gameBoardSize.width) && (row >= 0) && (row < gameBoardSize.height)) {				
+			cells.remove(new LinkableCell(col, row));
+			cells.insertAtHead(new LinkableCell(col, row));
+			repaint();
+	    }				
 	}
 	
 	static class LinkableCell implements Linkable
@@ -169,5 +169,9 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		
 		@Override
 		public void setNext(Linkable node) { next = node; }		
+	}
+	
+	public static LinkableCell newLinkableCell(int x, int y) {
+		return new LinkableCell(x, y);
 	}
 }
