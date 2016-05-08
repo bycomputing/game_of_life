@@ -1,11 +1,18 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
+import javax.swing.Box;
 import javax.swing.JApplet;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -21,7 +28,7 @@ public class LifeApplet extends JApplet {
 	private Thread game;	
 	private GameBoard gameBoard;
 	private MyCustomDialogs dialogs;
-	JButton startButn, clearButn, gensButn, speedButn, quitButn;
+	JButton startButn, clearButn, gensButn, speedButn;
 	JLabel gensLabel;
 
 	@Override
@@ -29,33 +36,122 @@ public class LifeApplet extends JApplet {
 		life = new Game();
 
 		LinkedList ll = new LinkedList();
-		for (int i = 0; i < welcome.length; i++)
+		for (int i = 0; i < welcome.length; ++i)
 			ll.insertAtHead(GameBoard.newLinkableCell(welcome[i][0], welcome[i][1]));
-				
+		
 		gameBoard = new GameBoard(ll);		
 		dialogs = new MyCustomDialogs();
 		dialogs.setSpeed(60);
 		dialogs.setGenerations(100);
+		
+        JMenuBar menuBar = new JMenuBar();
+        		
+        JMenu color = new JMenu("Color");
+		color.setMnemonic(KeyEvent.VK_C);
+		
+		JMenuItem background = new JMenuItem("Background");
+		JMenuItem fill = new JMenuItem("Fill");
+		JMenuItem grid = new JMenuItem("Grid");
+		JMenuItem outline = new JMenuItem("Outline");
+		
+		color.add(background);
+		color.add(fill);
+		color.add(grid);
+		color.add(outline);
+		
+		JMenu help = new JMenu("Help");
+		help.setMnemonic(KeyEvent.VK_H);
+		
+		JMenuItem about = new JMenuItem("About");
+		JMenuItem rules = new JMenuItem("Rules of Life");
+		
+		help.add(about);
+		help.add(rules);
+		
+		menuBar.add(color);
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(help);
+		
+		setJMenuBar(menuBar);
 		
 		JPanel bottomPanel = new JPanel();
 		startButn = new JButton("Start");
 		clearButn = new JButton("Clear");
 		gensButn = new JButton("Gens");
 		speedButn = new JButton("Speed");
-		quitButn = new JButton("Quit");
-		gensLabel = new JLabel(String.format("Generation #%5d%n", dialogs.getGenerations()));
+		gensLabel = new JLabel(String.format("Generation #%5d%n", dialogs.getGenerations()));		
 		
 		bottomPanel.add(startButn);
 		bottomPanel.add(clearButn);
 		bottomPanel.add(gensButn);
 		bottomPanel.add(speedButn);
-		bottomPanel.add(quitButn);
 		bottomPanel.add(gensLabel);
 		
 		Container pane = getContentPane();
         pane.setLayout(new BorderLayout());
 		pane.add(gameBoard, BorderLayout.CENTER);
 		pane.add(bottomPanel, BorderLayout.SOUTH);
+		
+		background.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color color = JColorChooser.showDialog(
+						gameBoard, "Choose background color", gameBoard.getBackground());
+				gameBoard.setBackground(color);
+			}
+		});
+		
+		fill.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color color = JColorChooser.showDialog(
+						gameBoard, "Choose fill color", gameBoard.getFillColor());
+				gameBoard.setFillColor(color);
+				gameBoard.repaint();
+			}
+		});
+		
+        grid.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color color = JColorChooser.showDialog(
+						gameBoard, "Choose grid color", gameBoard.getGridColor());
+				gameBoard.setGridColor(color);
+				gameBoard.repaint();
+			}
+		});
+		
+		outline.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color color = JColorChooser.showDialog(
+						gameBoard, "Choose outline color", gameBoard.getOutlineColor());
+				gameBoard.setOutlineColor(color);
+				gameBoard.repaint();				
+			}
+		});
+		
+		about.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, MyCustomDialogs.about,
+						"About", JOptionPane.INFORMATION_MESSAGE);				
+			}
+		});
+		
+		rules.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, MyCustomDialogs.rules,
+						"Rules of Life", JOptionPane.INFORMATION_MESSAGE);				
+			}
+		});
 		
 		startButn.addActionListener(new ActionListener() {
 			
@@ -72,8 +168,7 @@ public class LifeApplet extends JApplet {
 					life.stopRunning();
 				default:
 					break;
-				}
-					
+				}					
 			}
 		});
 		
@@ -101,24 +196,6 @@ public class LifeApplet extends JApplet {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(
 						null, dialogs.newSpeedDialog());				
-			}
-		});
-		
-		quitButn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int response = JOptionPane.showConfirmDialog(
-						null, "Do you really want to quit?",
-						"Message", JOptionPane.YES_NO_OPTION);
-				switch (response) {
-				case JOptionPane.YES_OPTION:
-					System.exit(0);
-				case JOptionPane.NO_OPTION:
-					break;
-				default:
-					break;
-			    }				
 			}
 		});
 	}

@@ -18,9 +18,22 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	private static final int BOXSIZE = 12;
 	private Dimension gameBoardSize = null;
 	private static Graphics2D g2d;
+	Color gridColor = Color.DARK_GRAY, outlineColor = Color.RED, fillColor = Color.GREEN;
 	LinkedList cells;	
 	
-	public GameBoard() {
+	public Color getGridColor() { return gridColor; }
+
+	public Color getOutlineColor() { return outlineColor; }
+
+	public Color getFillColor() { return fillColor; }
+	
+	public void setGridColor(Color gridColor) { this.gridColor = gridColor; }
+
+	public void setOutlineColor(Color outlineColor) { this.outlineColor = outlineColor;	}
+
+	public void setFillColor(Color fillColor) { this.fillColor = fillColor; }
+
+	public GameBoard() { 
 		this(new LinkedList());
 	}
 	
@@ -30,7 +43,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		addMouseListener(this);
 		addMouseMotionListener(this);		
 	}
-	
+
 	public void clearWorld() {
 		cells = new LinkedList();
 		repaint();		
@@ -112,7 +125,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 
 	private void doDrawing(Graphics g) {		
 		g2d = (Graphics2D) g;		
-		g2d.setColor(Color.DARK_GRAY);
+		g2d.setColor(gridColor);
 		
 		for (int i = 0; i <= gameBoardSize.width; i++)
 			g2d.drawLine(((i * BOXSIZE)+BOXSIZE), BOXSIZE,
@@ -125,9 +138,9 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 			            ((i * BOXSIZE) + BOXSIZE));
 		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {			
-			g2d.setPaint(Color.RED);			
+			g2d.setPaint(outlineColor);			
 			g2d.draw(new Ellipse2D.Double(l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));			
-			g2d.setPaint(Color.GREEN);			
+			g2d.setPaint(fillColor);			
 	        g2d.fill(new Ellipse2D.Double(
 	        		l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));
 		}
