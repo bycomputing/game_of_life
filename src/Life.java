@@ -1,10 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -22,8 +26,7 @@ import com.wordpress.bycomputing.Conway.LinkedList;
 import com.wordpress.bycomputing.Conway.MyCustomDialogs;
 
 @SuppressWarnings("serial")
-public class Life extends JFrame implements Runnable {		
-	//private static Life life;
+public class Life extends JFrame implements Runnable {
 	private boolean running;	
 	private GameBoard gameBoard;
 	private MyCustomDialogs dialogs;
@@ -48,7 +51,7 @@ public class Life extends JFrame implements Runnable {
 		this.setSize(640, 480);
 		this.setMinimumSize(new Dimension(640, 480));
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		LinkedList ll = new LinkedList();
 		for (int i = 0; i < welcome.length; ++i)
@@ -60,34 +63,48 @@ public class Life extends JFrame implements Runnable {
 		dialogs.setGenerations(100);
 		
         JMenuBar menuBar = new JMenuBar();
-        		
+        
+        JMenu gameMenu = new JMenu("Game");
+        gameMenu.setMnemonic(KeyEvent.VK_G);
+        
         JMenu color = new JMenu("Color");
-		color.setMnemonic(KeyEvent.VK_C);
-		
+        color.setMnemonic(KeyEvent.VK_C);
+        
+        JMenu help = new JMenu("Help");
+		help.setMnemonic(KeyEvent.VK_H);
+        
+        JMenuItem spawn = new JMenuItem("New Game");
+        spawn.setMnemonic(KeyEvent.VK_N);
 		JMenuItem background = new JMenuItem("Background");
+		background.setMnemonic(KeyEvent.VK_B);
 		JMenuItem fill = new JMenuItem("Fill");
+		fill.setMnemonic(KeyEvent.VK_F);
 		JMenuItem grid = new JMenuItem("Grid");
+		grid.setMnemonic(KeyEvent.VK_G);
 		JMenuItem outline = new JMenuItem("Outline");
+		outline.setMnemonic(KeyEvent.VK_O);
+		JMenuItem about = new JMenuItem("About");
+		about.setMnemonic(KeyEvent.VK_A);
+		JMenuItem rules = new JMenuItem("Rules of Life");
+		rules.setMnemonic(KeyEvent.VK_R);
+		JMenuItem source = new JMenuItem("Source code");
+		source.setMnemonic(KeyEvent.VK_S);
 		
+		gameMenu.add(spawn);
 		color.add(background);
 		color.add(fill);
 		color.add(grid);
 		color.add(outline);
-		
-		JMenu help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H);
-		
-		JMenuItem about = new JMenuItem("About");
-		JMenuItem rules = new JMenuItem("Rules of Life");
-		
 		help.add(about);
 		help.add(rules);
+		help.add(source);
 		
+		menuBar.add(gameMenu);
 		menuBar.add(color);
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(help);
 		
-		setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
 		
 		JPanel bottomPanel = new JPanel();
 		startButn = new JButton("Start");
@@ -108,6 +125,23 @@ public class Life extends JFrame implements Runnable {
         pane.setLayout(new BorderLayout());
 		pane.add(gameBoard, BorderLayout.CENTER);
 		pane.add(bottomPanel, BorderLayout.SOUTH);
+		
+		spawn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						Life life = new Life();
+						life.setVisible(true);
+						
+					}
+				});
+				
+			}
+		});
 		
 		background.addActionListener(new ActionListener() {
 			
@@ -170,6 +204,21 @@ public class Life extends JFrame implements Runnable {
 			}
 		});
 		
+		source.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Desktop.isDesktopSupported()) {
+					Desktop desktop = Desktop.getDesktop();
+					try {
+						desktop.browse(new URI("https://github.com/bycomputing/game_of_life"));
+					} catch (IOException | URISyntaxException e2) {
+						e2.printStackTrace();
+					}					
+				}				
+			}
+		});
+		
 		startButn.addActionListener(new ActionListener() {
 			
 			@Override
@@ -225,7 +274,7 @@ public class Life extends JFrame implements Runnable {
 						"Message", JOptionPane.YES_NO_OPTION);
 				switch (response) {
 				case JOptionPane.YES_OPTION:
-					System.exit(0);
+					Life.this.dispose();
 				case JOptionPane.NO_OPTION:
 					break;
 				default:

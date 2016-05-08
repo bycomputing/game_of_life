@@ -45,26 +45,24 @@ public class LifeApplet extends JApplet {
 		dialogs.setGenerations(100);
 		
         JMenuBar menuBar = new JMenuBar();
-        		
+        
         JMenu color = new JMenu("Color");
-		color.setMnemonic(KeyEvent.VK_C);
-		
+        color.setMnemonic(KeyEvent.VK_C);
+        
+        JMenu help = new JMenu("Help");
+		help.setMnemonic(KeyEvent.VK_H);
+        		
 		JMenuItem background = new JMenuItem("Background");
 		JMenuItem fill = new JMenuItem("Fill");
 		JMenuItem grid = new JMenuItem("Grid");
 		JMenuItem outline = new JMenuItem("Outline");
+		JMenuItem about = new JMenuItem("About");
+		JMenuItem rules = new JMenuItem("Rules of Life");
 		
 		color.add(background);
 		color.add(fill);
 		color.add(grid);
 		color.add(outline);
-		
-		JMenu help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H);
-		
-		JMenuItem about = new JMenuItem("About");
-		JMenuItem rules = new JMenuItem("Rules of Life");
-		
 		help.add(about);
 		help.add(rules);
 		
@@ -72,7 +70,7 @@ public class LifeApplet extends JApplet {
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(help);
 		
-		setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
 		
 		JPanel bottomPanel = new JPanel();
 		startButn = new JButton("Start");

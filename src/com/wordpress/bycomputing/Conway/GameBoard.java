@@ -17,7 +17,7 @@ import com.wordpress.bycomputing.Conway.LinkedList.Linkable;
 public class GameBoard extends JPanel implements ComponentListener, MouseListener, MouseMotionListener {	
 	private static final int BOXSIZE = 12;
 	private Dimension gameBoardSize = null;
-	private static Graphics2D g2d;
+	private Graphics2D g2d;
 	Color gridColor = Color.DARK_GRAY, outlineColor = Color.RED, fillColor = Color.GREEN;
 	LinkedList cells;	
 	
@@ -41,7 +41,8 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		this.cells = cells;
 		addComponentListener(this);
 		addMouseListener(this);
-		addMouseMotionListener(this);		
+		addMouseMotionListener(this);
+		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);
 	}
 
 	public void clearWorld() {
@@ -90,7 +91,8 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);		
+		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);
+		repaint();
 	}
 
 	@Override
