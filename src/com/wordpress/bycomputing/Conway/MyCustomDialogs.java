@@ -9,7 +9,7 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class MyCustomDialogs {
-	private int speed = 0, generations = 0;
+	private int speed = 0, generations = 0, percentage = 0;
 	public static final String rules = "\n" + 
 			"1.    Any live cell with fewer than two live neighbours dies, as if caused by under-population.\n" + 
 			"2.    Any live cell with two or three live neighbours lives on to the next generation.\n" + 
@@ -19,17 +19,23 @@ public class MyCustomDialogs {
 	public static final String about = "\n" +
 	        "Conway's Game of Life in Java Swing";
 	
-	public void setSpeed(int speed) { this.speed = speed; }
-
-	public void setGenerations(int generations) { this.generations = generations; }
-
 	public int getSpeed() { return speed; }
-
+	
+	public void setSpeed(int speed) { this.speed = speed; }
+	
 	public int getGenerations() { return generations; }
+
+	public void setGenerations(int generations) { this.generations = generations; }	
+
+	public int getPercentage() { return percentage; }
+
+	public void setPercentage(int percentage) { this.percentage = percentage; }
 
 	public SpeedDialog newSpeedDialog() { return new SpeedDialog(); }
 	
 	public GensDialog newGensDialog() { return new GensDialog(); }
+	
+	public RandDialog newRandDialog() { return new RandDialog(); }
 
 	class SpeedDialog extends JPanel implements ChangeListener {
 		JSlider slider;
@@ -74,5 +80,25 @@ public class MyCustomDialogs {
 			generations = slider.getValue();
 			label.setText("No. of generation(s): " + generations);
 		}		
+	}
+	
+	class RandDialog extends SpeedDialog {
+
+		@Override
+		protected void UIPack() {
+			JPanel panel = new JPanel(new GridLayout(1, 2));
+			slider = new JSlider(0, 100, percentage);
+			slider.addChangeListener(this);
+			label = new JLabel("Seed " + percentage + "%");
+			panel.add(slider);
+			panel.add(label);
+			add(panel);
+		}
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			percentage = slider.getValue();
+			label.setText("Seed " + percentage + "%");
+		}	
 	}
 }

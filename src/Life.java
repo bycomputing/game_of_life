@@ -61,6 +61,7 @@ public class Life extends JFrame implements Runnable {
 		dialogs = new MyCustomDialogs();
 		dialogs.setSpeed(60);
 		dialogs.setGenerations(100);
+		dialogs.setPercentage(25);
 		
         JMenuBar menuBar = new JMenuBar();
         
@@ -75,6 +76,7 @@ public class Life extends JFrame implements Runnable {
         
         JMenuItem spawn = new JMenuItem("New Game");
         spawn.setMnemonic(KeyEvent.VK_N);
+        JMenuItem random = new JMenuItem("Random seed");
 		JMenuItem background = new JMenuItem("Background");
 		background.setMnemonic(KeyEvent.VK_B);
 		JMenuItem fill = new JMenuItem("Fill");
@@ -91,6 +93,7 @@ public class Life extends JFrame implements Runnable {
 		source.setMnemonic(KeyEvent.VK_S);
 		
 		gameMenu.add(spawn);
+		gameMenu.add(random);
 		color.add(background);
 		color.add(fill);
 		color.add(grid);
@@ -143,6 +146,18 @@ public class Life extends JFrame implements Runnable {
 			}
 		});
 		
+		random.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(gameMenu, dialogs.newRandDialog(),
+						"Percentage to Seed", JOptionPane.INFORMATION_MESSAGE);
+				//gensLabel.setText(String.format("Generation #%5d%n", dialogs.getGenerations()));
+				gameBoard.randomSeed(dialogs.getPercentage());
+				
+			}
+		});
+		
 		background.addActionListener(new ActionListener() {
 			
 			@Override
@@ -190,7 +205,7 @@ public class Life extends JFrame implements Runnable {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, MyCustomDialogs.about,
+				JOptionPane.showMessageDialog(help, MyCustomDialogs.about,
 						"About", JOptionPane.INFORMATION_MESSAGE);				
 			}
 		});
@@ -199,7 +214,7 @@ public class Life extends JFrame implements Runnable {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, MyCustomDialogs.rules,
+				JOptionPane.showMessageDialog(help, MyCustomDialogs.rules,
 						"Rules of Life", JOptionPane.INFORMATION_MESSAGE);				
 			}
 		});
@@ -250,8 +265,8 @@ public class Life extends JFrame implements Runnable {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null, dialogs.newGensDialog());
+				JOptionPane.showMessageDialog(gensButn, dialogs.newGensDialog(),
+						"Number of Generations", JOptionPane.INFORMATION_MESSAGE);
 				gensLabel.setText(String.format("Generation #%5d%n", dialogs.getGenerations()));
 			}
 		});
@@ -260,8 +275,8 @@ public class Life extends JFrame implements Runnable {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null, dialogs.newSpeedDialog());				
+				JOptionPane.showMessageDialog(speedButn, dialogs.newSpeedDialog(),
+						"Simulation Speed", JOptionPane.INFORMATION_MESSAGE);				
 			}
 		});
 		

@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
+import java.util.Random;
+
 import javax.swing.JPanel;
 import com.wordpress.bycomputing.Conway.LinkedList.Linkable;
 
@@ -43,6 +45,15 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);
+	}
+	
+	public void randomSeed(int percent) {
+		//cells = new LinkedList();
+		Random randomGenerator = new Random();
+		for (int i = 0; i < gameBoardSize.width; i++)
+			for (int j = 0; j < gameBoardSize.height; j++) 
+				if (randomGenerator.nextInt(100) < percent)
+					addCell(i, j);				
 	}
 
 	public void clearWorld() {
@@ -99,7 +110,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	public void componentShown(ComponentEvent e) {}
 
 	@Override
-	public void mouseClicked(MouseEvent e) { addCell(e); }	
+	public void mouseClicked(MouseEvent e) { addClickedCell(e); }	
 
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -111,10 +122,10 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) { addCell(e); }
+	public void mouseReleased(MouseEvent e) { addClickedCell(e); }
 	
 	@Override
-	public void mouseDragged(MouseEvent e) { addCell(e); }
+	public void mouseDragged(MouseEvent e) { addClickedCell(e); }
 
 	@Override
 	public void mouseMoved(MouseEvent e) {}	
@@ -148,16 +159,20 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		}
 	}
 	
-	private void addCell(MouseEvent e) {
+	private void addClickedCell(MouseEvent e) {
 		int col = e.getX() / BOXSIZE - 1;
 		int row = e.getY() / BOXSIZE - 1;
+		addCell(col, row);				
+	}
+	
+	private void addCell(int col, int row) {
 		if ((col >= 0) && (col < gameBoardSize.width) && (row >= 0) && (row < gameBoardSize.height)) {				
 			cells.remove(new LinkableCell(col, row));
 			cells.insertAtHead(new LinkableCell(col, row));
 			repaint();
-	    }				
+	    }		
 	}
-	
+
 	static class LinkableCell implements Linkable
 	{		
 		int x, y;
