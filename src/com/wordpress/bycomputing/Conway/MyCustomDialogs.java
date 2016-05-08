@@ -8,7 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
-public class SliderDialogs {
+public class MyCustomDialogs {
 	private int speed = 0, generations = 0;
 	
 	public void setSpeed(int speed) { this.speed = speed; }
