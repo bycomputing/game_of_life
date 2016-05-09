@@ -35,7 +35,7 @@ public class MyCustomDialogs {
 			"3.    Any live cell with more than three live neighbours dies, as if by over-population.\n" + 
 			"4.    Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.\n" + 
 			"";
-	public static final String about = "John H. Conways Game of Life in Java Swings using linked lists\n" + 
+	public static final String about = "John H. Conway's Game of Life in Java Swing using linked lists\n" + 
 			"Copyright (C) 2016  Ryan Salvador        \n" + 
 			"\n" + 
 			"This program is free software; you can redistribute it and/or\n" + 
@@ -105,7 +105,7 @@ public class MyCustomDialogs {
 			JPanel panel = new JPanel(new GridLayout(1, 2));
 			slider = new JSlider(0, 10000, generations);
 			slider.addChangeListener(this);
-			label = new JLabel("No. of generation(s): " + generations);
+			label = new JLabel(generations + " generation(s)");
 			panel.add(slider);
 			panel.add(label);
 			add(panel);
@@ -114,7 +114,7 @@ public class MyCustomDialogs {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			generations = slider.getValue();
-			label.setText("No. of generation(s): " + generations);
+			label.setText(generations + " generation(s)");
 		}		
 	}
 	
