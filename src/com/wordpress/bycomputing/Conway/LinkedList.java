@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * This part of the source code is the work of David Flanagan from his book
+ * Java Examples in a Nutshell - A Tutorial Companion to Java in a Nutshell - First Edition
+ * Copyright (C) 1997 O'Reilly & Associates, Inc. All rights reserved.
+ * Published by O'Reilly & Associates, Inc., 101 Morris Street, Sebastopol, CA 95472. 
+ *******************************************************************************/
+
 package com.wordpress.bycomputing.Conway;
 
 public class LinkedList {

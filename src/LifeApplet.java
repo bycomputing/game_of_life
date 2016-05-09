@@ -1,9 +1,32 @@
+/*******************************************************************************
+ * John Conway's Game of Life in Java Swing using linked lists
+ * Copyright (C) 2016  Ryan Salvador
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *******************************************************************************/
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.Box;
 import javax.swing.JApplet;
@@ -15,7 +38,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import com.wordpress.bycomputing.Conway.GameBoard;
 import com.wordpress.bycomputing.Conway.LinkedList;
 import com.wordpress.bycomputing.Conway.LinkedList.Linkable;
@@ -43,29 +65,46 @@ public class LifeApplet extends JApplet {
 		dialogs = new MyCustomDialogs();
 		dialogs.setSpeed(60);
 		dialogs.setGenerations(100);
+		dialogs.setPercentage(25);
 		
         JMenuBar menuBar = new JMenuBar();
+        
+        JMenu gameMenu = new JMenu("Game");
+        gameMenu.setMnemonic(KeyEvent.VK_G);
         
         JMenu color = new JMenu("Color");
         color.setMnemonic(KeyEvent.VK_C);
         
         JMenu help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
-        		
+        
+        JMenuItem random = new JMenuItem("Random seed");
+        random.setMnemonic(KeyEvent.VK_R);
 		JMenuItem background = new JMenuItem("Background");
+		background.setMnemonic(KeyEvent.VK_B);
 		JMenuItem fill = new JMenuItem("Fill");
+		fill.setMnemonic(KeyEvent.VK_F);
 		JMenuItem grid = new JMenuItem("Grid");
+		grid.setMnemonic(KeyEvent.VK_G);
 		JMenuItem outline = new JMenuItem("Outline");
+		outline.setMnemonic(KeyEvent.VK_O);
 		JMenuItem about = new JMenuItem("About");
+		about.setMnemonic(KeyEvent.VK_A);
 		JMenuItem rules = new JMenuItem("Rules of Life");
+		rules.setMnemonic(KeyEvent.VK_U);
+		JMenuItem source = new JMenuItem("Source code");
+		source.setMnemonic(KeyEvent.VK_S);
 		
+		gameMenu.add(random);
 		color.add(background);
 		color.add(fill);
 		color.add(grid);
 		color.add(outline);
 		help.add(about);
 		help.add(rules);
+		help.add(source);
 		
+		menuBar.add(gameMenu);
 		menuBar.add(color);
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(help);
@@ -89,6 +128,17 @@ public class LifeApplet extends JApplet {
         pane.setLayout(new BorderLayout());
 		pane.add(gameBoard, BorderLayout.CENTER);
 		pane.add(bottomPanel, BorderLayout.SOUTH);
+				
+		random.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(gameMenu, dialogs.newRandDialog(),
+						"Percentage to Seed", JOptionPane.INFORMATION_MESSAGE);
+				gameBoard.randomSeed(dialogs.getPercentage());
+				
+			}
+		});
 		
 		background.addActionListener(new ActionListener() {
 			
@@ -137,7 +187,7 @@ public class LifeApplet extends JApplet {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, MyCustomDialogs.about,
+				JOptionPane.showMessageDialog(help, MyCustomDialogs.about,
 						"About", JOptionPane.INFORMATION_MESSAGE);				
 			}
 		});
@@ -146,8 +196,23 @@ public class LifeApplet extends JApplet {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, MyCustomDialogs.rules,
+				JOptionPane.showMessageDialog(help, MyCustomDialogs.rules,
 						"Rules of Life", JOptionPane.INFORMATION_MESSAGE);				
+			}
+		});
+		
+		source.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Desktop.isDesktopSupported()) {
+					Desktop desktop = Desktop.getDesktop();
+					try {
+						desktop.browse(new URI("https://github.com/bycomputing/game_of_life"));
+					} catch (IOException | URISyntaxException e2) {
+						e2.printStackTrace();
+					}					
+				}				
 			}
 		});
 		
@@ -182,8 +247,8 @@ public class LifeApplet extends JApplet {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null, dialogs.newGensDialog());
+				JOptionPane.showMessageDialog(gensButn, dialogs.newGensDialog(),
+						"Number of Generations", JOptionPane.INFORMATION_MESSAGE);
 				gensLabel.setText(String.format("Generation #%5d%n", dialogs.getGenerations()));
 			}
 		});
@@ -192,8 +257,8 @@ public class LifeApplet extends JApplet {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-						null, dialogs.newSpeedDialog());				
+				JOptionPane.showMessageDialog(speedButn, dialogs.newSpeedDialog(),
+						"Simulation Speed", JOptionPane.INFORMATION_MESSAGE);				
 			}
 		});
 	}
@@ -204,10 +269,6 @@ public class LifeApplet extends JApplet {
 		Linkable next;
 		
 		public LinkableCell(int x, int y) { this.x = x; this.y = y; }
-		
-		public int getX() { return x; }
-		
-		public int getY() { return y; }
 		
 		public String toString() { return x + " " + y; }
 		
