@@ -21,6 +21,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	private Dimension gameBoardSize = null;
 	private Graphics2D g2d;
 	Color gridColor = Color.DARK_GRAY, outlineColor = Color.RED, fillColor = Color.GREEN;
+	Random randomGenerator = new Random();
 	LinkedList cells;	
 	
 	public Color getGridColor() { return gridColor; }
@@ -48,8 +49,6 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	}
 	
 	public void randomSeed(int percent) {
-		//cells = new LinkedList();
-		Random randomGenerator = new Random();
 		for (int i = 0; i < gameBoardSize.width; i++)
 			for (int j = 0; j < gameBoardSize.height; j++) 
 				if (randomGenerator.nextInt(100) < percent)
@@ -64,7 +63,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	public void simulate() {
         boolean[][] world = new boolean[gameBoardSize.width + 2][gameBoardSize.height + 2];		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {
-			world[l.getX()+1][l.getY()+1] = true;			
+			world[l.x+1][l.y+1] = true;			
 		}
 		
 		LinkedList survivors = new LinkedList();
@@ -89,7 +88,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 			}
 		cells = new LinkedList();
 		for (LinkableCell l = (LinkableCell) survivors.getHead(); l != null; l = (LinkableCell) l.getNext()) {
-			cells.insertAtHead(new LinkableCell(l.getX(), l.getY()));
+			cells.insertAtHead(new LinkableCell(l.x, l.y));
 		}
 		repaint();		
 	}
@@ -103,7 +102,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 	@Override
 	public void componentResized(ComponentEvent e) {
 		gameBoardSize = new Dimension(getWidth() / BOXSIZE - 2, getHeight() / BOXSIZE - 2);
-		repaint();
+		updateLinkedList();
 	}
 
 	@Override
@@ -152,10 +151,10 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		
 		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) {			
 			g2d.setPaint(outlineColor);			
-			g2d.draw(new Ellipse2D.Double(l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));			
+			g2d.draw(new Ellipse2D.Double(l.x * BOXSIZE + BOXSIZE + 1, l.y * BOXSIZE + BOXSIZE + 1, 10, 10));			
 			g2d.setPaint(fillColor);			
 	        g2d.fill(new Ellipse2D.Double(
-	        		l.getX() * BOXSIZE + BOXSIZE + 1, l.getY() * BOXSIZE + BOXSIZE + 1, 10, 10));
+	        		l.x * BOXSIZE + BOXSIZE + 1, l.y * BOXSIZE + BOXSIZE + 1, 10, 10));
 		}
 	}
 	
@@ -172,6 +171,13 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 			repaint();
 	    }		
 	}
+	
+	private void updateLinkedList() {
+		for (LinkableCell l = (LinkableCell) cells.getHead(); l != null; l = (LinkableCell) l.getNext()) 
+			if ((l.x > gameBoardSize.width - 1) || (l.y > gameBoardSize.height - 1))
+				cells.remove(new LinkableCell(l.x, l.y));		
+		repaint();		
+	}
 
 	static class LinkableCell implements Linkable
 	{		
@@ -179,11 +185,7 @@ public class GameBoard extends JPanel implements ComponentListener, MouseListene
 		Linkable next;
 		
 		public LinkableCell(int x, int y) { this.x = x; this.y = y; }
-		
-		public int getX() { return x; }
-		
-		public int getY() { return y; }
-		
+				
 		public String toString() { return x + " " + y; }
 		
 		public boolean equals(Object o) {

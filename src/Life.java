@@ -77,6 +77,7 @@ public class Life extends JFrame implements Runnable {
         JMenuItem spawn = new JMenuItem("New Game");
         spawn.setMnemonic(KeyEvent.VK_N);
         JMenuItem random = new JMenuItem("Random seed");
+        random.setMnemonic(KeyEvent.VK_R);
 		JMenuItem background = new JMenuItem("Background");
 		background.setMnemonic(KeyEvent.VK_B);
 		JMenuItem fill = new JMenuItem("Fill");
@@ -88,7 +89,7 @@ public class Life extends JFrame implements Runnable {
 		JMenuItem about = new JMenuItem("About");
 		about.setMnemonic(KeyEvent.VK_A);
 		JMenuItem rules = new JMenuItem("Rules of Life");
-		rules.setMnemonic(KeyEvent.VK_R);
+		rules.setMnemonic(KeyEvent.VK_U);
 		JMenuItem source = new JMenuItem("Source code");
 		source.setMnemonic(KeyEvent.VK_S);
 		
